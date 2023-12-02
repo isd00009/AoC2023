@@ -2,24 +2,20 @@
 #include <string>
 #include <fstream>
 #include <map>
+#include <algorithm>
 
 using namespace std;
 
 int main()
 {
-    map<string, int> color_limits = {{"red", 12}, {"green", 13}, {"blue", 14}};
-
     ifstream input("input.txt", ios::in);
 
-    int suma = 0;
+    long long totalPowerSum = 0;
     string line;
     while (getline(input, line))
     {
         string word;
-
         int number = 0;
-        map<string, int> color_counter;
-
         int id = 0;
         int pos = line.find("Game");
         if (pos != string::npos)
@@ -36,11 +32,12 @@ int main()
 
         line.erase(0, 2);
         line.append(";");
-        bool possible = true;
 
-        for (int i = 0; i < line.length() && possible; ++i)
+        map<string, int> color_counter;
+        map<string, int> min_cubes = {{"red", 0}, {"green", 0}, {"blue", 0}};
+
+        for (int i = 0; i < line.length(); ++i)
         {
-            color_counter.clear();
             if (isdigit(line[i]))
             {
                 while (isdigit(line[i]))
@@ -54,10 +51,8 @@ int main()
                 color_counter[word] += number;
                 if (word != "")
                 {
-                    if (color_counter[word] > color_limits.at(word))
-                    {
-                        possible = false;
-                    }
+                    min_cubes[word] = max(min_cubes[word], color_counter[word]);
+                    color_counter[word] = 0;
                 }
                 word = "";
                 number = 0;
@@ -67,13 +62,16 @@ int main()
                 word += line[i];
             }
         }
-        if (possible)
+
+        int power = 1;
+        for (const auto &pair : min_cubes)
         {
-            suma += id;
+            power *= pair.second;
         }
+        totalPowerSum += power;
     }
 
-    cout << "Solucion: " << suma << endl;
+    cout << "Sum of the power of the minimum sets: " << totalPowerSum << endl;
 
     return 0;
 }
