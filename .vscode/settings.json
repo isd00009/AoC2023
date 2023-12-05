@@ -1,5 +1,5 @@
 {
-    "BracketHighlighter.enableExtension": false,
+    "BracketHighlighter.enableExtension": true,
     "files.associations": {
         "array": "cpp",
         "atomic": "cpp",
